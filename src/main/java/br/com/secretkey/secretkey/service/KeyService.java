@@ -25,7 +25,7 @@ public class KeyService {
 
     public String generateStrongPassword(int length) {
         if (length < 8) {
-            throw new IllegalArgumentException("Password length must be at least 8 characters.");
+            throw new AppException("Password length must be at least 8 characters.", HttpStatus.CONFLICT);
         }
 
         SecureRandom random = new SecureRandom();

@@ -19,11 +19,11 @@ public class UserService {
 
     private  void validateEmailDocument(final UserDto userData) {
         if (userRepository.existsUserByEmail(userData.getEmail())) {
-            throw new AppException("emailAlreadyUse", HttpStatus.CONFLICT);
+            throw new AppException("Email already in use", HttpStatus.CONFLICT);
         }
 
         if (userRepository.existsUserByDocument(userData.getDocument())) {
-            throw new AppException("documentAlreadyUse", HttpStatus.CONFLICT);
+            throw new AppException("Document already in use", HttpStatus.CONFLICT);
         }
     }
     public User createUser(final UserDto userData) {
