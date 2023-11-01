@@ -7,6 +7,7 @@ import br.com.secretkey.secretkey.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,6 +61,7 @@ public class UserService {
         final User user = userRepository.findById(id).orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
 
         user.setActive(false);
+        user.setDeletedAt(new Date());
 
         userRepository.save(user);
     }

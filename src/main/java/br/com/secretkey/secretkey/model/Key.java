@@ -25,7 +25,7 @@ public class Key {
     private String reference;
 
     @CreationTimestamp
-    @Column(nullable = false)
+    @Column()
     private Date createdAt;
     @UpdateTimestamp
     @Column()
