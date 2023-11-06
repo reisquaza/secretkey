@@ -11,58 +11,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@Service
-public class UserService {
-    private final UserRepository userRepository;
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+public interface UserService {
+     User createUser(final UserDto userData);
 
-    private  void validateEmailDocument(final UserDto userData) {
-        if (userRepository.existsUserByEmail(userData.getEmail())) {
-            throw new AppException("Email already in use", HttpStatus.CONFLICT);
-        }
+     List<User> readUsers();
 
-        if (userRepository.existsUserByDocument(userData.getDocument())) {
-            throw new AppException("Document already in use", HttpStatus.CONFLICT);
-        }
-    }
-    public User createUser(final UserDto userData) {
-        validateEmailDocument(userData);
+     User retrieveUser(final UUID id);
 
-        final User user = new User(userData.getName(), userData.getDocument(), userData.getEmail(), userData.getPassword());
+     User updateUser(final UserDto userData, final UUID id);
 
-        return userRepository.save(user);
-    }
-
-    public List<User> readUsers() {
-        return userRepository.findAll();
-    }
-
-    public User retrieveUser(final UUID id) {
-        return userRepository.findById(id).orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
-    }
-
-    public User updateUser(final UserDto userData, final UUID id) {
-        validateEmailDocument(userData);
-
-        final User user = userRepository.findById(id).orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
-
-        user.setName(userData.getName());
-        user.setPassword(userData.getPassword());
-        user.setEmail(userData.getEmail());
-        user.setDocument(userData.getDocument());
-
-
-        return userRepository.save(user);
-    }
-
-    public void deleteUser(final UUID id) {
-        final User user = userRepository.findById(id).orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
-
-        user.setActive(false);
-        user.setDeletedAt(new Date());
-
-        userRepository.save(user);
-    }
+     void deleteUser(final UUID id);
 }

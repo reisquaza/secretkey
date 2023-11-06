@@ -13,42 +13,11 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.UUID;
 
-@Service
-public class KeyService {
-    private final KeyRepository keyRepository;
-    private final UserRepository userRepository;
 
-    public KeyService(KeyRepository keyRepository, UserRepository userRepository) {
-        this.keyRepository = keyRepository;
-        this.userRepository = userRepository;
-    }
+public interface KeyService {
+    String generateStrongPassword(int length);
 
-    public String generateStrongPassword(int length) {
-        if (length < 8) {
-            throw new AppException("Password length must be at least 8 characters.", HttpStatus.CONFLICT);
-        }
+    Key createKey(final KeyDto keyData);
 
-        SecureRandom random = new SecureRandom();
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-
-        StringBuilder password = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            int index = random.nextInt(characters.length());
-            password.append(characters.charAt(index));
-        }
-
-        return password.toString();
-    }
-
-    public Key createKey(final KeyDto keyData)  {
-        final User user = userRepository.findById(keyData.getUserId()).orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
-
-        final Key key = new Key(user, keyData.getPassword(), keyData.getReference());
-
-        return keyRepository.save(key);
-    }
-
-    public List<Key> readKeys(final UUID userId)  {
-        return keyRepository.findByUserId(userId);
-    }
+    List<Key> readKeys(final UUID userId);
  }
