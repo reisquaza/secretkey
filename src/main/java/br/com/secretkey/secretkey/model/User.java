@@ -1,5 +1,6 @@
 package br.com.secretkey.secretkey.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -23,6 +24,7 @@ public class User {
     @Column(length = 62, nullable = false, unique = true)
     private String email;
 
+    @JsonIgnore
     @Column(length = 48, columnDefinition = "TEXT", nullable = false)
     private String password;
 
