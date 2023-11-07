@@ -22,5 +22,7 @@ services:
       - DATABASE_URL=postgresql://postgres:5432/secretkey
       - DATABASE_USERNAME=reisquaza
       - DATABASE_PASSWORD=1234
+    volumes:
+      - .:/app
 volumes:
   postgres-data:
