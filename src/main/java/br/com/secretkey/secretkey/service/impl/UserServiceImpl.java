@@ -19,19 +19,19 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    private  void validateEmailDocument(final UserDto userData) {
-        if (userRepository.existsUserByEmail(userData.getEmail())) {
+    private  void validateEmailDocument(final UserDto userDto) {
+        if (userRepository.existsUserByEmail(userDto.getEmail())) {
             throw new AppException("Email already in use", HttpStatus.CONFLICT);
         }
 
-        if (userRepository.existsUserByDocument(userData.getDocument())) {
+        if (userRepository.existsUserByDocument(userDto.getDocument())) {
             throw new AppException("Document already in use", HttpStatus.CONFLICT);
         }
     }
-    public User createUser(final UserDto userData) {
-        validateEmailDocument(userData);
+    public User createUser(final UserDto userDto) {
+        validateEmailDocument(userDto);
 
-        final User user = new User(userData.getName(), userData.getDocument(), userData.getEmail(), userData.getPassword());
+        final User user = new User(userDto.getName(), userDto.getDocument(), userDto.getEmail(), userDto.getPassword());
 
         return userRepository.save(user);
     }
@@ -44,15 +44,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id).orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
     }
 
-    public User updateUser(final UserDto userData, final UUID id) {
-        validateEmailDocument(userData);
+    public User updateUser(final UserDto userDto, final UUID id) {
+        validateEmailDocument(userDto);
 
         final User user = userRepository.findById(id).orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
 
-        user.setName(userData.getName());
-        user.setPassword(userData.getPassword());
-        user.setEmail(userData.getEmail());
-        user.setDocument(userData.getDocument());
+        user.setName(userDto.getName());
+        user.setPassword(userDto.getPassword());
+        user.setEmail(userDto.getEmail());
+        user.setDocument(userDto.getDocument());
 
 
         return userRepository.save(user);

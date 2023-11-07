@@ -41,10 +41,10 @@ public class KeyServiceImpl implements KeyService {
         return password.toString();
     }
 
-    public Key createKey(final KeyDto keyData)  {
-        final User user = userRepository.findById(keyData.getUserId()).orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
+    public Key createKey(final KeyDto keyDto)  {
+        final User user = userRepository.findById(keyDto.getUserId()).orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
 
-        final Key key = new Key(user, keyData.getPassword(), keyData.getReference());
+        final Key key = new Key(user, keyDto.getPassword(), keyDto.getReference());
 
         return keyRepository.save(key);
     }
