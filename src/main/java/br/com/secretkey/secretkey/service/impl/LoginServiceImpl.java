@@ -10,6 +10,8 @@ import br.com.secretkey.secretkey.service.TokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class LoginServiceImpl implements LoginService {
     private final UserRepository userRepository;
@@ -24,9 +26,12 @@ public class LoginServiceImpl implements LoginService {
     public Token authenticate(LoginDto loginDto) {
         final User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
 
+        if (!Objects.equals(loginDto.getPassword(), user.getPassword())) {
+            throw new AppException("Invalid email/password", HttpStatus.UNAUTHORIZED);
+        }
+
         String token = tokenService.createToken("userId", user.getId().toString());
 
         return new Token(token, user.getId());
     }
-
 }

@@ -2,7 +2,9 @@ package br.com.secretkey.secretkey.service.impl;
 
 import br.com.secretkey.secretkey.service.TokenService;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -25,4 +27,15 @@ public class TokenServiceImpl implements TokenService {
                 .withExpiresAt(expirationDate)
                 .sign(algorithm);
     }
+
+    public String retrieveUserId(String token) {
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+
+        JWTVerifier verifier = JWT.require(algorithm).withIssuer("secretkey").build();
+
+        DecodedJWT decodedJWT = verifier.verify(token);
+
+        return decodedJWT.getClaim("userId").asString();
+    }
+
 }
