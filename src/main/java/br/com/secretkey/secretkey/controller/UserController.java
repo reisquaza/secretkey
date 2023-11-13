@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,13 +18,11 @@ import java.util.UUID;
 public class UserController {
 
         private final UserService userService;
-        private final KeyService keyService;
         private final TokenService tokenService;
 
 
-    public UserController(UserService userService, KeyService keyService, TokenService tokenService) {
+    public UserController(UserService userService, TokenService tokenService) {
         this.userService = userService;
-        this.keyService = keyService;
         this.tokenService = tokenService;
     }
 
@@ -45,16 +42,24 @@ public class UserController {
 
             final String token = bearerToken.substring(7);
 
-            final String userId = tokenService.retrieveUserId(token);
+            final UUID userId = tokenService.retrieveUserId(token);
 
-            final User user = userService.retrieveUser(UUID.fromString(userId));
+            final User user = userService.retrieveUser(userId);
 
             return new ResponseEntity<User>(user, HttpStatus.OK);
         }
 
-        @DeleteMapping("/{id}")
-        public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
-            userService.deleteUser(id);
+        @DeleteMapping
+        public ResponseEntity<Void> deleteUser(@RequestHeader("Authorization") String bearerToken) {
+            if (bearerToken == null) {
+                throw new AppException("Unauthorized", HttpStatus.UNAUTHORIZED);
+            }
+
+            final String token = bearerToken.substring(7);
+
+            final UUID userId = tokenService.retrieveUserId(token);
+
+            userService.deleteUser(userId);
 
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

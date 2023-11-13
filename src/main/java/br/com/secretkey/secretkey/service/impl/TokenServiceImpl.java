@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class TokenServiceImpl implements TokenService {
@@ -28,14 +29,14 @@ public class TokenServiceImpl implements TokenService {
                 .sign(algorithm);
     }
 
-    public String retrieveUserId(String token) {
+    public UUID retrieveUserId(String token) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
         JWTVerifier verifier = JWT.require(algorithm).withIssuer("secretkey").build();
 
         DecodedJWT decodedJWT = verifier.verify(token);
 
-        return decodedJWT.getClaim("userId").asString();
+        return UUID.fromString(decodedJWT.getClaim("userId").asString());
     }
 
 }
