@@ -43,12 +43,14 @@ public class KeyController {
         keyData.setUserId(userId);
 
         if (generatePassword) {
-            String generatedPassword = keyService.generateStrongPassword(25);
+            String generatedPassword = keyService.generateStrongPassword(15);
             String encryptedPassword = encryptService.encrypt(generatedPassword);
 
             keyData.setPassword(encryptedPassword);
 
             final Key key = keyService.createKey(keyData);
+
+            key.setPassword(generatedPassword);
 
             return new ResponseEntity<Key>(key, HttpStatus.CREATED);
         }
