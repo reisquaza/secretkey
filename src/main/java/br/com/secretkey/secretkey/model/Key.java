@@ -1,5 +1,6 @@
 package br.com.secretkey.secretkey.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,6 +17,7 @@ public class Key {
 
     @ManyToOne
     @JoinColumn(nullable = false)
+    @JsonIgnore
     private User user;
 
     @Column(length = 60, nullable = false)
